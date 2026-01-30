@@ -1,0 +1,86 @@
+{
+  "name": "arogyax",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "AI-Powered Healthcare Assistant for Indian Healthcare Needs",
+  "main": "healthbot-server.js",
+  "scripts": {
+    "start": "node healthbot-server.js",
+    "dev": "nodemon healthbot-server.js",
+    "test": "jest",
+    "lint": "eslint *.js",
+    "build": "npm install",
+    "deploy": "pm2 start healthbot-server.js --name healthbot",
+    "setup-db": "node scripts/setup-database.js",
+    "seed-data": "node scripts/seed-medical-data.js",
+    "backend": "node backend/server.js",
+    "frontend": "npx live-server --port=8000"
+  },
+  "keywords": [
+    "healthbot",
+    "whatsapp",
+    "sms",
+    "healthcare",
+    "ai",
+    "nlp",
+    "telemedicine",
+    "indian-healthcare",
+    "messaging-bot",
+    "symptom-checker",
+    "emergency-detection"
+  ],
+  "author": "AROGYAX/HealthBot Team",
+  "license": "MIT",
+  "dependencies": {
+    "@google/genai": "^1.19.0",
+    "@huggingface/inference": "^4.8.0",
+    "@supabase/supabase-js": "^2.57.4",
+    "axios": "^1.5.0",
+    "bcryptjs": "^2.4.3",
+    "compression": "^1.7.4",
+    "compromise": "^14.10.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.21.2",
+    "express-rate-limit": "^6.10.0",
+    "google-auth-library": "^8.9.0",
+    "helmet": "^7.0.0",
+    "joi": "^17.9.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongodb": "^6.19.0",
+    "mongoose": "^7.5.0",
+    "multer": "^1.4.5-lts.1",
+    "natural": "^6.5.0",
+    "node-cron": "^3.0.2",
+    "nodemailer": "^6.9.4",
+    "pdf-parse": "^1.1.1",
+    "pg": "^8.11.3",
+    "redis": "^4.6.7",
+    "sharp": "^0.32.5",
+    "tesseract.js": "^4.1.1",
+    "twilio": "^4.15.0",
+    "uuid": "^9.0.0",
+    "winston": "^3.10.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.47.0",
+    "jest": "^29.6.2",
+    "live-server": "^1.2.2",
+    "nodemon": "^3.0.1",
+    "serve": "^14.0.0",
+    "supertest": "^6.3.3",
+    "vitest": "^3.2.4"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/healthbot-whatsapp-sms.git"
+  },
+  "bugs": {
+    "url": "https://github.com/your-username/healthbot-whatsapp-sms/issues"
+  },
+  "homepage": "https://healthbot.arogyax.com"
+}
