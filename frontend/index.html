@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AROGYAX - Your AI Health Companion | Sathi Chatbot</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="google-auth-styles.css">
+    <link rel="stylesheet" href="nearby-services.css">
+    <link rel="stylesheet" href="health-dashboard-styles.css">
+    <link rel="stylesheet" href="feature-styles.css">
+    <link rel="stylesheet" href="health-tools-styles.css">
+    <link rel="stylesheet" href="enhanced-health-tools-styles.css">
+    <link rel="stylesheet" href="healthcare-dashboard-styles.css">
+    <link rel="stylesheet" href="healthcare-quick-actions-styles.css">
+    <link rel="stylesheet" href="sathi-gemini-styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+        <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const emergencyModal = document.getElementById('emergencyModal');
+            const emergencyBtn = document.querySelector('.emergency-btn');
+            const closeModalBtn = emergencyModal.querySelector('.close');
+
+            const openModal = () => emergencyModal.style.display = 'block';
+            const closeModal = () => emergencyModal.style.display = 'none';
+
+            emergencyBtn.addEventListener('click', openModal);
+            closeModalBtn.addEventListener('click', closeModal);
+
+            window.addEventListener('click', (event) => {
+                if (event.target == emergencyModal) {
+                    closeModal();
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <div class="logo-container">
+                    <svg width="80" height="80" viewBox="0 0 140 140" class="arogyax-logo">
+                        <!-- Medical Cross Background with gradient -->
+                        <defs>
+                            <linearGradient id="crossGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#26d0ce;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#1a9b98;stop-opacity:1" />
+                            </linearGradient>
+                            <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+                                <feDropShadow dx="2" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.3"/>
+                            </filter>
+                        </defs>
+                        
+                        <!-- Medical Cross with 3D effect -->
+                        <rect x="35" y="10" width="70" height="120" fill="url(#crossGradient)" rx="35" filter="url(#shadow)"/>
+                        <rect x="10" y="35" width="120" height="70" fill="url(#crossGradient)" rx="35" filter="url(#shadow)"/>
+                        
+                        <!-- Realistic Heartbeat Line -->
+                        <path d="M15 70 L25 70 L30 70 L35 45 L40 95 L45 25 L50 115 L55 70 L60 70 L65 55 L70 85 L75 70 L125 70" 
+                              stroke="white" stroke-width="4" fill="none" stroke-linecap="round" 
+                              style="filter: drop-shadow(0 1px 2px rgba(0,0,0,0.3));"/>
+                        
+                        <!-- Realistic DNA Double Helix -->
+                        <g stroke="white" stroke-width="3.5" fill="none" stroke-linecap="round">
+                            <!-- Left strand -->
+                            <path d="M90 15 Q100 25 90 35 Q80 45 90 55 Q100 65 90 75 Q80 85 90 95 Q100 105 90 115 Q80 125 90 135" 
+                                  style="filter: drop-shadow(0 1px 1px rgba(0,0,0,0.2));"/>
+                            <!-- Right strand -->
+                            <path d="M110 15 Q100 25 110 35 Q120 45 110 55 Q100 65 110 75 Q120 85 110 95 Q100 105 110 115 Q120 125 110 135" 
+                                  style="filter: drop-shadow(0 1px 1px rgba(0,0,0,0.2));"/>
+                            <!-- Rungs -->
+                            <line x1="90" y1="25" x2="110" y2="25" />
+                            <line x1="90" y1="45" x2="110" y2="45" />
+                            <line x1="90" y1="65" x2="110" y2="65" />
+                            <line x1="90" y1="85" x2="110" y2="85" />
+                            <line x1="90" y1="105" x2="110" y2="105" />
+                            <line x1="90" y1="125" x2="110" y2="125" />
+                        </g>
+                    </svg>
+                </div>
+            </div>
+            <div class="nav-menu">
+                <a href="#healthcare-services">Healthcare</a>
+                <a href="#features">Features</a>
+                <a href="#resources">Resources</a>
+                <a href="#about">About</a>
+                <a href="#contact">Contact</a>
+            </div>
+            <div class="nav-auth">
+                <button id="google-signin-btn" class="google-signin-btn" onclick="window.googleAuth?.signIn()">
+                    <svg width="18" height="18" viewBox="0 0 24 24">
+                        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                    </svg>
+                    <span>Sign in with Google</span>
+                </button>
+                
+                <div id="user-info" class="user-info" style="display: none;">
+                    <img id="user-avatar" class="user-avatar" src="" alt="User Avatar">
+                    <span id="user-name" class="user-name"></span>
+                    <button id="google-signout-btn" class="signout-btn" onclick="window.googleAuth?.signOut()" style="display: none;">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Sign Out
+                    </button>
+                </div>
+                
+                <!-- Temporary container for Google Sign-In popup -->
+                <div id="temp-signin-container" style="display: none;"></div>
+            </div>
+            <div class="nav-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-container">
+            <div class="hero-content">
+                <h1>Your AI Health Companion</h1>
+                <h2>Instant Disease Awareness & Prevention with <span class="highlight">Sathi</span></h2>
+                <p>Experience exceptional healthcare with our team of dedicated professionals. Get instant, evidence-based health information, symptom assessment, and personalized prevention guidance - available 24/7 in multiple Indian languages.</p>
+                <div class="hero-buttons">
+                    <button class="btn-primary" onclick="openSathiChat()">
+                        <i class="fas fa-comments"></i>
+                        Chat with Sathi
+                    </button>
+                    <button class="btn-voice">
+                        <i class="fas fa-microphone"></i>
+                        Voice Control
+                    </button>
+                </div>
+                <div class="hero-stats">
+                    <div class="stat">
+                        <span class="stat-number">100+</span>
+                        <span class="stat-label">Users Helped</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">24/7</span>
+                        <span class="stat-label">Available</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">10+</span>
+                        <span class="stat-label">Languages</span>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-demo">
+                <div class="chatbot-preview enhanced-preview">
+                    <div class="chat-header">
+                        <div class="chat-avatar">
+                            <div class="avatar-container">
+                                <i class="fas fa-robot"></i>
+                                <div class="status-indicator"></div>
+                            </div>
+                        </div>
+                        <div class="chat-info">
+                            <h4>Sathi - AI Health Assistant</h4>
+                            <span class="online-status">
+                                <i class="fas fa-circle"></i> Online
+                            </span>
+                        </div>
+                        <div class="chat-actions">
+                            <button class="action-btn" title="Voice Chat"><i class="fas fa-microphone"></i></button>
+                            <button class="action-btn" title="Settings"><i class="fas fa-cog"></i></button>
+                        </div>
+                    </div>
+                    <div class="chat-messages" id="heroChatMessages">
+                        <div class="message bot-message animate-in">
+                            <div class="message-avatar"><i class="fas fa-robot"></i></div>
+                            <div class="message-content">
+                                <div class="message-text">Namaste! I'm Sathi, your AI health companion. How can I help you today?</div>
+                                <div class="message-time">Just now</div>
+                            </div>
+                        </div>
+                        <div class="message user-message animate-in">
+                             <div class="message-avatar"><i class="fas fa-user"></i></div>
+                            <div class="message-content">
+                                <div class="message-text">I have a headache and a slight fever.</div>
+                                <div class="message-time">A moment ago</div>
+                            </div>
+                        </div>
+                        <div class="message bot-message animate-in">
+                            <div class="message-avatar"><i class="fas fa-robot"></i></div>
+                            <div class="message-content">
+                                <div class="message-text">I'm sorry to hear that. To help you better, could you tell me if you have any other symptoms?</div>
+                                <div class="quick-replies">
+                                    <button class="quick-reply">Cough</button>
+                                    <button class="quick-reply">Sore Throat</button>
+                                    <button class="quick-reply">No other symptoms</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="typing-indicator" id="heroTypingIndicator" style="display: none;">
+                            <div class="message bot-message">
+                                <div class="message-avatar"><i class="fas fa-robot"></i></div>
+                                <div class="message-content">
+                                    <div class="typing-dots">
+                                        <span></span><span></span><span></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chat-input enhanced-input">
+                        <div class="input-container">
+                            <button class="input-action" title="Attach File"><i class="fas fa-paperclip"></i></button>
+                            <textarea placeholder="Type your message..." id="heroInput" rows="1"></textarea>
+                            <button class="input-action voice-btn" title="Voice Input"><i class="fas fa-microphone"></i></button>
+                            <button class="send-btn" title="Send Message"><i class="fas fa-paper-plane"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Emergency Alert Banner -->
+    <div class="emergency-banner">
+        <div class="emergency-content">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span>Emergency? Call <strong>112</strong> (National Emergency) | <strong>102</strong> (Ambulance) | <strong>100</strong> (Police)</span>
+            <button class="emergency-btn">All Emergency Numbers</button>
+        </div>
+    </div>
+
+
+    <!-- Trust & Credibility Section -->
+    <section class="trust-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Trusted Healthcare Information</h2>
+                <p>Evidence-based medical information from reputable sources</p>
+            </div>
+            <div class="trust-grid">
+                <div class="trust-item">
+                    <i class="fas fa-user-md"></i>
+                    <h4>Medical Advisory Board</h4>
+                    <p>Reviewed by certified Indian healthcare professionals</p>
+                </div>
+                <div class="trust-item">
+                    <i class="fas fa-database"></i>
+                    <h4>Verified Sources</h4>
+                    <p>Information from ICMR, WHO, CDC, and leading Indian medical institutions</p>
+                </div>
+                <div class="trust-item">
+                    <i class="fas fa-shield-alt"></i>
+                    <h4>Privacy & Security</h4>
+                    <p>HIPAA compliant with end-to-end encryption for your health data</p>
+                </div>
+                <div class="trust-item">
+                    <i class="fas fa-certificate"></i>
+                    <h4>Medical Accuracy</h4>
+                    <p>Certified by Indian Medical Association and peer-reviewed content</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Health Tools -->
+    <section class="health-tools">
+        <div class="container">
+            <div class="section-header">
+                <h2>Interactive Health Tools</h2>
+                <p>Comprehensive health management and tracking solutions</p>
+            </div>
+            <div class="tools-grid">
+                <div class="tool-card">
+                    <div class="tool-icon">
+                        <i class="fas fa-clipboard-check"></i>
+                    </div>
+                    <h3>Health Assessment Quiz</h3>
+                    <p>Quick health literacy and personalized risk assessment</p>
+                    <button class="tool-btn">Start Quiz</button>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Symptom Tracker</h3>
+                    <p>Monitor health changes and symptoms over time</p>
+                    <button class="tool-btn">Track Symptoms</button>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-icon">
+                        <i class="fas fa-syringe"></i>
+                    </div>
+                    <h3>Vaccination Scheduler</h3>
+                    <p>Personalized vaccination reminders based on Indian immunization schedule</p>
+                    <button class="tool-btn">Schedule Vaccines</button>
+                </div>
+                <div class="tool-card">
+                    <div class="tool-icon">
+                        <i class="fas fa-bullseye"></i>
+                    </div>
+                    <h3>Health Goal Tracker</h3>
+                    <p>Set and monitor personal health objectives with AI guidance</p>
+                    <button class="tool-btn">Set Goals</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="testimonials">
+        <div class="container">
+            <div class="section-header">
+                <h2>What Our Users Say</h2>
+                <p>Real stories from real patients across India</p>
+            </div>
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="testimonial-rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p>"Sathi helped me understand my symptoms and guided me to seek proper medical care. The Hindi support made it so much easier to communicate my health concerns."</p>
+                    <div class="testimonial-author">
+                        <strong>Priya Sharma</strong>
+                        <span>Mumbai, Maharashtra</span>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p>"The emergency detection feature potentially saved my life. When I described chest pain, Sathi immediately advised me to call 102 and seek emergency care."</p>
+                    <div class="testimonial-author">
+                        <strong>Rajesh Kumar</strong>
+                        <span>Delhi, NCR</span>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p>"As a mother of two, having 24/7 access to reliable health information in Tamil has been invaluable. Sathi is like having a doctor friend always available."</p>
+                    <div class="testimonial-author">
+                        <strong>Meera Krishnan</strong>
+                        <span>Chennai, Tamil Nadu</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <div class="container">
+            <div class="section-header">
+                <h2>Comprehensive Health Services</h2>
+                <p>Advanced AI-powered healthcare solutions tailored for India</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-stethoscope"></i>
+                    </div>
+                    <h3>Symptom Checker</h3>
+                    <p>Interactive symptom assessment with intelligent decision trees and personalized health recommendations.</p>
+                    <button class="feature-btn">Try Now</button>
+                    <button class="feature-btn-alt">Voice Analysis</button>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-database"></i>
+                    </div>
+                    <h3>Disease Information</h3>
+                    <p>Comprehensive database of diseases, conditions, and health topics with Indian medical context.</p>
+                    <button class="feature-btn">Explore</button>
+                    <button class="feature-btn-alt">3D View</button>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>Risk Assessment</h3>
+                    <p>Personalized health risk evaluation based on your demographics, lifestyle, and medical history.</p>
+                    <button class="feature-btn">Assess Risk</button>
+                    <button class="feature-btn-alt">Gait Analysis</button>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <h3>Prevention Guidance</h3>
+                    <p>Tailored prevention strategies, vaccination schedules, and health recommendations for Indian population.</p>
+                    <button class="feature-btn">Get Guidance</button>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-exclamation-circle"></i>
+                    </div>
+                    <h3>Emergency Detection</h3>
+                    <p>Intelligent identification of urgent symptoms with direct connection to Indian emergency services.</p>
+                    <button class="feature-btn">Emergency Info</button>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-language"></i>
+                    </div>
+                    <h3>Multi-language Support</h3>
+                    <p>Available in Hindi, English, Tamil, Telugu, Bengali, Marathi, Gujarati, Kannada, Malayalam, and Punjabi.</p>
+                    <button class="feature-btn">Choose Language</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Floating Chat Button -->
+    <div class="floating-chat-btn" onclick="openSathiChat()">
+        <i class="fas fa-comments"></i>
+        <span class="chat-tooltip">Chat with Sathi</span>
+    </div>
+
+    <!-- Sathi Chatbot Modal -->
+    <div id="sathiModal" class="sathi-modal" style="display: none;">
+        <div class="sathi-modal-content">
+            <div class="sathi-header">
+                <div class="sathi-title">
+                    <i class="fas fa-robot"></i>
+                    <span>Chat with Sathi</span>
+                </div>
+                <button class="sathi-close" onclick="closeSathiChat()">&times;</button>
+            </div>
+            <div class="sathi-chat-area">
+                <div id="sathiMessages" style="height: 400px; overflow-y: auto; padding: 20px; background: #f8fafc;">
+                    <!-- Messages will be added here dynamically -->
+                </div>
+                <!-- Quick Actions -->
+                <div class="quick-actions">
+                    <button class="quick-action-btn" onclick="handleQuickAction('symptom')">
+                        <i class="fas fa-stethoscope"></i> Symptom Check
+                    </button>
+                    <button class="quick-action-btn" onclick="handleQuickAction('emergency')">
+                        <i class="fas fa-ambulance"></i> Emergency
+                    </button>
+                    <button class="quick-action-btn" onclick="handleQuickAction('tips')">
+                        <i class="fas fa-heartbeat"></i> Health Tips
+                    </button>
+                    <button class="quick-action-btn" onclick="handleQuickAction('medicine')">
+                        <i class="fas fa-pills"></i> Medicine Info
+                    </button>
+                    <button class="quick-action-btn" onclick="handleQuickAction('doctor')">
+                        <i class="fas fa-user-md"></i> Find Doctor
+                    </button>
+                </div>
+                <div class="sathi-input-area">
+                    <div id="file-preview-container" class="file-preview-container" style="display: none;">
+                        <img id="file-preview-image" src="" alt="File preview"/>
+                        <button id="remove-file-btn" class="remove-file-btn">&times;</button>
+                    </div>
+                    <div class="input-wrapper">
+                        <button id="upload-btn" class="input-action-btn" title="Attach file" aria-label="Attach file">
+                            <i class="fas fa-paperclip"></i>
+                        </button>
+                        <input type="file" id="file-input" style="display: none;" accept="image/*,application/pdf,.doc,.docx"/>
+                        <textarea id="sathiInput" placeholder="Type or speak your health question..." rows="1" aria-label="Type or speak your message"></textarea>
+                        <button id="voice-input-btn" class="input-action-btn" title="Voice input" aria-label="Voice input">
+                            <i class="fas fa-microphone"></i>
+                        </button>
+                        <button class="send-btn" title="Send message" aria-label="Send message">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                        <div id="voice-status" class="voice-status" style="display: none;">
+                            <span class="pulse-animation"></span>
+                            <span>Listening...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Emergency Numbers Modal -->
+    <div id="emergencyModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-phone-alt"></i> Indian Emergency Numbers</h3>
+                <span class="close">&times;</span>
+            </div>
+            <div class="emergency-numbers">
+                    <div class="emergency-category">
+                        <h4>All-in-One Emergency</h4>
+                        <div class="number-grid">
+                            <div class="number-item primary">
+                                <span class="number">112</span>
+                                <span class="service">National Emergency Helpline</span>
+                                <span class="description">For all emergencies: Police, Fire, and Ambulance.</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="emergency-category">
+                        <h4>Medical Helplines</h4>
+                        <div class="number-grid">
+                            <div class="number-item"><span class="number">102</span><span class="service">Ambulance</span></div>
+                            <div class="number-item"><span class="number">108</span><span class="service">Disaster Management</span></div>
+                            <div class="number-item"><span class="number">104</span><span class="service">Health Helpline</span></div>
+                            <div class="number-item"><span class="number">1097</span><span class="service">AIDS Helpline</span></div>
+                            <div class="number-item"><span class="number">1910</span><span class="service">Blood Bank Info</span></div>
+                        </div>
+                    </div>
+                    <div class="emergency-category">
+                        <h4>Civic & Safety Helplines</h4>
+                        <div class="number-grid">
+                            <div class="number-item"><span class="number">100</span><span class="service">Police</span></div>
+                            <div class="number-item"><span class="number">101</span><span class="service">Fire Brigade</span></div>
+                            <div class="number-item"><span class="number">1091</span><span class="service">Women Helpline</span></div>
+                            <div class="number-item"><span class="number">181</span><span class="service">Domestic Abuse</span></div>
+                            <div class="number-item"><span class="number">1098</span><span class="service">Child Helpline</span></div>
+                            <div class="number-item"><span class="number">14567</span><span class="service">Senior Citizen Helpline</span></div>
+                            <div class="number-item"><span class="number">1906</span><span class="service">LPG Leak Helpline</span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <p>In a critical emergency, always try to call 112 first.</p>
+                        <div class="number-item">
+                            <span class="number">104</span>
+                            <span class="service">National Health Portal Helpline</span>
+                        </div>
+                        <div class="number-item">
+                            <span class="number">14419</span>
+                            <span class="service">Cyber Crime Helpline</span>
+                        </div>
+                        <div class="number-item">
+                            <span class="number">1562</span>
+                            <span class="service">Tourist Helpline</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Nearby Healthcare Services Dashboard -->
+    <section id="nearby-services" class="nearby-services">
+        <div class="container">
+            <div class="section-header">
+                <h2>Nearby Healthcare Services</h2>
+                <p>Find medical facilities and services in your area</p>
+            </div>
+            
+            <div class="location-bar">
+                <div class="location-input">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <input type="text" id="locationInput" placeholder="Enter your location" value="Mumbai, India">
+                    <button class="btn-locate">
+                        <i class="fas fa-location-arrow"></i> Current Location
+                    </button>
+                </div>
+            </div>
+
+            <div class="services-grid">
+                <!-- Hospitals -->
+                <div class="service-category">
+                    <div class="category-header">
+                        <i class="fas fa-hospital"></i>
+                        <h3>Hospitals</h3>
+                    </div>
+                    <div class="facility-list" id="hospitalsList">
+                        <div class="facility-item">
+                            <div class="facility-info">
+                                <h4>Lilavati Hospital</h4>
+                                <p>A. Desai Road, Bandra West</p>
+                                <span class="distance">2.3 km away</span>
+                            </div>
+                            <div class="facility-actions">
+                                <button class="btn-directions">
+                                    <i class="fas fa-directions"></i>
+                                </button>
+                                <button class="btn-call">
+                                    <i class="fas fa-phone"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="facility-item">
+                            <div class="facility-info">
+                                <h4>Hinduja Hospital</h4>
+                                <p>Veer Savarkar Marg, Mahim</p>
+                                <span class="distance">3.1 km away</span>
+                            </div>
+                            <div class="facility-actions">
+                                <button class="btn-directions">
+                                    <i class="fas fa-directions"></i>
+                                </button>
+                                <button class="btn-call">
+                                    <i class="fas fa-phone"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pharmacies -->
+                <div class="service-category">
+                    <div class="category-header">
+                        <i class="fas fa-pills"></i>
+                        <h3>Pharmacies</h3>
+                    </div>
+                    <div class="facility-list" id="pharmaciesList">
+                        <div class="facility-item">
+                            <div class="facility-info">
+                                <h4>Apollo Pharmacy</h4>
+                                <p>Hill Road, Bandra West</p>
+                                <span class="distance">0.8 km away</span>
+                            </div>
+                            <div class="facility-actions">
+                                <button class="btn-directions" onclick="getDirections('pharmacy1')">
+                                    <i class="fas fa-directions"></i>
+                                </button>
+                                <button class="btn-call" onclick="callFacility('+912226431234')">
+                                    <i class="fas fa-phone"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="facility-item">
+                            <div class="facility-info">
+                                <h4>MedPlus Pharmacy</h4>
+                                <p>Linking Road, Bandra West</p>
+                                <span class="distance">1.2 km away</span>
+                            </div>
+                            <div class="facility-actions">
+                                <button class="btn-directions" onclick="getDirections('pharmacy2')">
+                                    <i class="fas fa-directions"></i>
+                                </button>
+                                <button class="btn-call" onclick="callFacility('+912226445678')">
+                                    <i class="fas fa-phone"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Doctors -->
+                <div class="service-category">
+                    <div class="category-header">
+                        <i class="fas fa-user-md"></i>
+                        <h3>Doctors</h3>
+                    </div>
+                    <div class="facility-list" id="doctorsList">
+                        <div class="facility-item">
+                            <div class="facility-info">
+                                <h4>Dr. Priya Sharma</h4>
+                                <p>General Medicine • Available Now</p>
+                                <span class="distance">Online Consultation</span>
+                            </div>
+                            <div class="facility-actions">
+                                <button class="btn-consult" onclick="bookConsultation('dr_sharma')">
+                                    <i class="fas fa-video"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="facility-item">
+                            <div class="facility-info">
+                                <h4>Dr. Rajesh Kumar</h4>
+                                <p>Cardiology • Next Available: 2:30 PM</p>
+                                <span class="distance">Online Consultation</span>
+                            </div>
+                            <div class="facility-actions">
+                                <button class="btn-consult" onclick="bookConsultation('dr_kumar')">
+                                    <i class="fas fa-video"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Emergency Services -->
+                <div class="service-category emergency-category">
+                    <div class="category-header">
+                        <i class="fas fa-ambulance"></i>
+                        <h3>Emergency Services</h3>
+                    </div>
+                    <div class="emergency-services">
+                        <div class="emergency-item" onclick="callEmergency('112')">
+                            <div class="emergency-icon">
+                                <i class="fas fa-phone-alt"></i>
+                            </div>
+                            <div class="emergency-info">
+                                <h4>National Emergency</h4>
+                                <p>112</p>
+                            </div>
+                        </div>
+                        <div class="emergency-item" onclick="callEmergency('102')">
+                            <div class="emergency-icon">
+                                <i class="fas fa-ambulance"></i>
+                            </div>
+                            <div class="emergency-info">
+                                <h4>Ambulance</h4>
+                                <p>102</p>
+                            </div>
+                        </div>
+                        <div class="emergency-item" onclick="callEmergency('108')">
+                            <div class="emergency-icon">
+                                <i class="fas fa-heartbeat"></i>
+                            </div>
+                            <div class="emergency-info">
+                                <h4>Emergency Helpline</h4>
+                                <p>108</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Resources Section -->
+    <section id="resources" class="resources-section">
+        <div class="container">
+            <h2>Health Resources</h2>
+            <div class="resources-grid">
+                <div class="resource-card">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <h3>Hospital Locator</h3>
+                    <p>Find nearest hospitals and healthcare facilities using GPS</p>
+                    <button class="btn-primary" onclick="findNearestHospitals()">Find Hospitals</button>
+                </div>
+                <div class="resource-card">
+                    <i class="fas fa-phone-alt"></i>
+                    <h3>Emergency Contacts</h3>
+                    <p>Quick access to local healthcare providers and emergency services</p>
+                    <button class="btn-primary" onclick="showEmergencyContacts()">View Contacts</button>
+                </div>
+                <div class="resource-card">
+                    <i class="fas fa-chart-line"></i>
+                    <h3>Health Analytics</h3>
+                    <p>Track your health metrics and get personalized insights</p>
+                    <button class="btn-primary" onclick="openHealthAnalytics()">View Analytics</button>
+                </div>
+                <div class="resource-card">
+                    <i class="fas fa-user-shield"></i>
+                    <h3>Anonymous Reporting</h3>
+                    <p>Report symptoms anonymously for disease surveillance</p>
+                    <button class="btn-primary" onclick="openAnonymousReporting()">Report Symptoms</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about-section">
+        <div class="container">
+            <div class="about-content">
+                <div class="about-text">
+                    <h2>About AROGYAX</h2>
+                    <p>AROGYAX is India's most advanced AI-powered health companion platform, designed specifically for the Indian healthcare ecosystem. Our mission is to make quality healthcare accessible to everyone through cutting-edge artificial intelligence and personalized health insights.</p>
+                    
+                    <div class="about-features">
+                        <div class="about-feature">
+                            <i class="fas fa-brain"></i>
+                            <div>
+                                <h4>Advanced AI Diagnostics</h4>
+                                <p>Powered by advanced AI tools and custom neural networks for accurate health analysis</p>
+                            </div>
+                        </div>
+                        <div class="about-feature">
+                            <i class="fas fa-globe-asia"></i>
+                            <div>
+                                <h4>Indian Healthcare Focus</h4>
+                                <p>Tailored for Indian diseases, medical practices, and healthcare infrastructure</p>
+                            </div>
+                        </div>
+                        <div class="about-feature">
+                            <i class="fas fa-shield-alt"></i>
+                            <div>
+                                <h4>Privacy & Security</h4>
+                                <p>End-to-end encryption and GDPR-compliant data protection</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="about-stats">
+                    <div class="stat-item">
+                        <span class="stat-number">50+</span>
+                        <span class="stat-label">AI Models</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">99.9%</span>
+                        <span class="stat-label">Uptime</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">24/7</span>
+                        <span class="stat-label">Support</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact-section">
+        <div class="container">
+            <h2>Contact Us</h2>
+            <div class="contact-content">
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <div>
+                            <h4>Email Support</h4>
+                            <p>support@arogyax.com</p>
+                            <p>medical@arogyax.com</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-phone"></i>
+                        <div>
+                            <h4>Phone Support</h4>
+                            <p>+91-1800-AROGYAX</p>
+                            <p>Available 24/7</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <div>
+                            <h4>Headquarters</h4>
+                            <p>AROGYAX Technologies Pvt. Ltd.</p>
+                            <p>Bangalore, Karnataka, India</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="contact-form">
+                    <form id="contactForm">
+                        <div class="form-group">
+                            <input type="text" id="contactName" placeholder="Your Name" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" id="contactEmail" placeholder="Your Email" required>
+                        </div>
+                        <div class="form-group">
+                            <select id="contactSubject" required>
+                                <option value="">Select Subject</option>
+                                <option value="general">General Inquiry</option>
+                                <option value="medical">Medical Support</option>
+                                <option value="technical">Technical Issue</option>
+                                <option value="partnership">Partnership</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <textarea id="contactMessage" placeholder="Your Message" rows="5" required></textarea>
+                        </div>
+                        <button type="submit" class="btn-primary">Send Message</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modals -->
+    <div id="hospitalLocatorModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('hospitalLocatorModal')">&times;</span>
+            <h3>Nearest Hospitals</h3>
+            <div id="hospitalList"></div>
+            <div id="mapContainer" style="height: 300px; margin-top: 20px;"></div>
+        </div>
+    </div>
+
+    <div id="emergencyContactsModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('emergencyContactsModal')">&times;</span>
+            <h3>Emergency Contacts</h3>
+            <div id="emergencyContactsList"></div>
+        </div>
+    </div>
+
+    <div id="healthTrendsModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('healthTrendsModal')">&times;</span>
+            <h3>Community Health Trends</h3>
+            <div id="healthTrendsChart"></div>
+            <div id="healthTrendsData"></div>
+        </div>
+    </div>
+
+    <div id="anonymousReportingModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('anonymousReportingModal')">&times;</span>
+            <h3>Anonymous Symptom Reporting</h3>
+            <form id="anonymousReportForm">
+                <div class="form-group">
+                    <label>Location (City/State)</label>
+                    <input type="text" id="reportLocation" placeholder="e.g., Mumbai, Maharashtra" required>
+                </div>
+                <div class="form-group">
+                    <label>Symptoms</label>
+                    <textarea id="reportSymptoms" placeholder="Describe symptoms..." rows="4" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Age Group</label>
+                    <select id="reportAgeGroup" required>
+                        <option value="">Select Age Group</option>
+                        <option value="0-18">0-18 years</option>
+                        <option value="19-35">19-35 years</option>
+                        <option value="36-50">36-50 years</option>
+                        <option value="51-65">51-65 years</option>
+                        <option value="65+">65+ years</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Duration</label>
+                    <select id="reportDuration" required>
+                        <option value="">Select Duration</option>
+                        <option value="1-2 days">1-2 days</option>
+                        <option value="3-7 days">3-7 days</option>
+                        <option value="1-2 weeks">1-2 weeks</option>
+                        <option value="2+ weeks">2+ weeks</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-primary">Submit Report</button>
+                <p class="privacy-note">Your report is completely anonymous and helps improve community health monitoring.</p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <i class="fas fa-heartbeat"></i>
+                        <span>AROGYAX</span>
+                    </div>
+                    <p>Your trusted AI health companion providing evidence-based medical information and personalized health guidance for India.</p>
+                    <div class="social-links">
+                        <a href="#" onclick="shareOnFacebook()" title="Share on Facebook"><i class="fab fa-facebook"></i></a>
+                        <a href="#" onclick="shareOnTwitter()" title="Share on Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" onclick="shareOnWhatsApp()" title="Share on WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                        <a href="#" onclick="shareOnLinkedIn()" title="Share on LinkedIn"><i class="fab fa-linkedin"></i></a>
+                        <a href="#" onclick="nativeShare()" title="Share" class="share-btn"><i class="fas fa-share-alt"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h4>Services</h4>
+                    <ul>
+                        <li><a href="#">Symptom Checker</a></li>
+                        <li><a href="#">Disease Information</a></li>
+                        <li><a href="#">Risk Assessment</a></li>
+                        <li><a href="#">Prevention Guidance</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="#" onclick="openHealthBlog()">Health Blog</a></li>
+                        <li><a href="#">Emergency Numbers</a></li>
+                        <li><a href="#" onclick="openResourceDirectory()">Healthcare Directory</a></li>
+                        <li><a href="#" onclick="openEducationalContent()">Educational Content</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Emergency Contacts</h4>
+                    <ul class="emergency-contacts">
+                        <li><strong>112</strong> - National Emergency</li>
+                        <li><strong>102</strong> - Ambulance</li>
+                        <li><strong>100</strong> - Police</li>
+                        <li><strong>101</strong> - Fire Brigade</li>
+                        <li><strong>1098</strong> - Child Helpline</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 AROGYAX. All rights reserved. | <a href="#" onclick="openPrivacyPolicy()">Privacy Policy</a> | <a href="#" onclick="openTerms()">Terms of Service</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="essential-functions.js"></script>
+    <script src="sathi-gemini-chat.js"></script>
+    <script src="init-chatbot.js"></script>
+    <script src="debug-chatbot.js"></script>
+    <script type="module" src="enhanced-health-tools.js"></script>
+
+</body>
+</html>
