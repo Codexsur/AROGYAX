@@ -1,0 +1,10 @@
+# Backend
+
+This folder contains the server-side code for the AROGYA-X healthcare system.
+
+Main responsibilities:
+- API handling
+- AI logic integration
+- Database connectivity
+- Authentication
+- Emergency detection services
